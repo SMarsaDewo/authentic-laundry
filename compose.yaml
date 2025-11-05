@@ -8,9 +8,7 @@
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
 
-
-
-version: '3.8'
+version: "3.8"
 
 services:
   frontend:
@@ -26,12 +24,6 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
     command: ["npm", "run", "dev"]
-
-
-
-
-
-
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
 # start the database before your application. The `db-data` volume persists the

@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import { useCart } from "../context/CartContext";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { cartItems } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,12 +47,27 @@ export default function Navbar() {
             </a>
           ))}
 
-          {/* CTA PESAN SEKARANG */}
-          <a
-            href="#order"
-            className="bg-softGold text-white font-semibold px-5 py-2 rounded-full shadow-md hover:bg-charcoal hover:text-softGold transition-all duration-300"
-          >
-            Pesan Sekarang
+          {/* ICON KERANJANG */}
+          <a href="#cart" className="relative">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-6 h-6 text-charcoal hover:text-softGold transition"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9m-6-9v9"
+              />
+            </svg>
+            {cartItems.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-softGold text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                {cartItems.length}
+              </span>
+            )}
           </a>
         </div>
 
@@ -99,11 +116,11 @@ export default function Navbar() {
             </a>
           ))}
           <a
-            href="#order"
+            href="#cart"
             onClick={() => setIsOpen(false)}
             className="inline-block bg-softGold text-white font-semibold px-5 py-2 rounded-full shadow hover:bg-charcoal hover:text-softGold transition-all duration-300"
           >
-            Pesan Sekarang
+            Keranjang ({cartItems.length})
           </a>
         </div>
       )}

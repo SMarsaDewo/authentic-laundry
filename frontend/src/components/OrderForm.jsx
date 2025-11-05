@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useCart } from "../context/CartContext";
 
 export default function OrderForm() {
+  const { addToCart } = useCart();
   const [form, setForm] = useState({
     nama: "",
     telepon: "",
@@ -14,73 +16,123 @@ export default function OrderForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Pesanan berhasil dikirim! (Simulasi frontend)");
+    addToCart(form);
+    alert("Pesanan ditambahkan ke keranjang!");
     setForm({ nama: "", telepon: "", layanan: "", alamat: "", catatan: "" });
   };
 
   return (
     <section
       id="order"
-      className="py-20 px-6 bg-gradient-to-r from-lightTeal to-softGold text-center text-pureWhite"
+      className="relative bg-gradient-to-br from-lightTeal/30 via-white to-softGold/20 py-24 px-6 overflow-hidden"
     >
-      <h2 className="text-3xl font-serifDisplay mb-6 drop-shadow-lg">
-        Formulir Pemesanan
-      </h2>
-      <p className="text-pureWhite/90 mb-10">
-        Lengkapi data berikut untuk melakukan pemesanan layanan laundry kami.
-      </p>
+      {/* background bubble dekorasi */}
+      <div className="absolute w-72 h-72 bg-lightTeal/30 blur-3xl rounded-full top-10 left-10 opacity-50 animate-pulse"></div>
+      <div className="absolute w-56 h-56 bg-softGold/30 blur-3xl rounded-full bottom-10 right-10 opacity-50 animate-pulse"></div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-3xl mx-auto bg-pureWhite rounded-2xl shadow-2xl p-8 space-y-6 text-charcoal"
-      >
-        <input
-          className="border border-gray-200 p-3 w-full rounded-md focus:ring-2 focus:ring-softGold outline-none"
-          placeholder="Nama Lengkap"
-          name="nama"
-          value={form.nama}
-          onChange={handleChange}
-          required
-        />
-        <input
-          className="border border-gray-200 p-3 w-full rounded-md focus:ring-2 focus:ring-softGold outline-none"
-          placeholder="No. Telepon"
-          name="telepon"
-          value={form.telepon}
-          onChange={handleChange}
-          required
-        />
-        <select
-          className="border border-gray-200 p-3 w-full rounded-md focus:ring-2 focus:ring-softGold outline-none"
-          name="layanan"
-          value={form.layanan}
-          onChange={handleChange}
-          required
+      <div className="relative z-10">
+        <h2 className="text-3xl md:text-4xl font-serifDisplay text-center text-charcoal mb-3">
+          Formulir Pemesanan
+        </h2>
+        <p className="text-center text-gray-600 font-poppins mb-12">
+          Yuk, isi data di bawah ini untuk melakukan pemesanan layanan laundry.
+        </p>
+
+        <form
+          onSubmit={handleSubmit}
+          className="max-w-3xl mx-auto bg-white/90 backdrop-blur-sm border border-lightTeal/30 rounded-2xl shadow-xl p-8 md:p-10 space-y-6 transition-all duration-300"
         >
-          <option value="">-- Pilih Layanan --</option>
-          <option value="Cuci Kiloan">Cuci Kiloan</option>
-          <option value="Cuci Setrika">Cuci Setrika</option>
-          <option value="Dry Cleaning">Dry Cleaning</option>
-        </select>
-        <textarea
-          className="border border-gray-200 p-3 w-full rounded-md focus:ring-2 focus:ring-softGold outline-none"
-          placeholder="Alamat Lengkap"
-          name="alamat"
-          value={form.alamat}
-          onChange={handleChange}
-          required
-        ></textarea>
-        <textarea
-          className="border border-gray-200 p-3 w-full rounded-md focus:ring-2 focus:ring-softGold outline-none"
-          placeholder="Catatan Tambahan"
-          name="catatan"
-          value={form.catatan}
-          onChange={handleChange}
-        ></textarea>
-        <button className="w-full bg-softGold hover:bg-lightTeal text-pureWhite font-semibold py-3 rounded-md transition-all duration-300">
-          Kirim Pesanan
-        </button>
-      </form>
+          {/* Input Nama */}
+          <div className="text-left">
+            <label className="block text-charcoal font-semibold mb-2 font-poppins">
+              Nama Lengkap
+            </label>
+            <input
+              className="border border-lightTeal/40 focus:border-softGold focus:ring-2 focus:ring-softGold/40 p-3 w-full rounded-xl transition-all outline-none font-poppins"
+              placeholder="Masukkan nama Anda"
+              name="nama"
+              value={form.nama}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {/* Input Telepon */}
+          <div className="text-left">
+            <label className="block text-charcoal font-semibold mb-2 font-poppins">
+              No. Telepon
+            </label>
+            <input
+              className="border border-lightTeal/40 focus:border-softGold focus:ring-2 focus:ring-softGold/40 p-3 w-full rounded-xl transition-all outline-none font-poppins"
+              placeholder="Contoh: 08123456789"
+              name="telepon"
+              value={form.telepon}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {/* Select Layanan */}
+          <div className="text-left">
+            <label className="block text-charcoal font-semibold mb-2 font-poppins">
+              Pilih Layanan
+            </label>
+            <select
+              className="border border-lightTeal/40 focus:border-softGold focus:ring-2 focus:ring-softGold/40 p-3 w-full rounded-xl bg-white transition-all outline-none font-poppins"
+              name="layanan"
+              value={form.layanan}
+              onChange={handleChange}
+              required
+            >
+              <option value="">-- Pilih Layanan --</option>
+              <option value="Cuci Kiloan">Cuci Kiloan</option>
+              <option value="Cuci Setrika">Cuci Setrika</option>
+              <option value="Dry Cleaning">Dry Cleaning</option>
+            </select>
+          </div>
+
+          {/* Alamat */}
+          <div className="text-left">
+            <label className="block text-charcoal font-semibold mb-2 font-poppins">
+              Alamat Lengkap
+            </label>
+            <textarea
+              className="border border-lightTeal/40 focus:border-softGold focus:ring-2 focus:ring-softGold/40 p-3 w-full rounded-xl transition-all outline-none font-poppins"
+              placeholder="Masukkan alamat lengkap untuk pengantaran/pengambilan"
+              name="alamat"
+              rows={3}
+              value={form.alamat}
+              onChange={handleChange}
+              required
+            ></textarea>
+          </div>
+
+          {/* Catatan */}
+          <div className="text-left">
+            <label className="block text-charcoal font-semibold mb-2 font-poppins">
+              Catatan Tambahan (Opsional)
+            </label>
+            <textarea
+              className="border border-lightTeal/40 focus:border-softGold focus:ring-2 focus:ring-softGold/40 p-3 w-full rounded-xl transition-all outline-none font-poppins"
+              placeholder="Contoh: Tolong gunakan parfum lembut"
+              name="catatan"
+              rows={2}
+              value={form.catatan}
+              onChange={handleChange}
+            ></textarea>
+          </div>
+
+          {/* Tombol Submit */}
+          <div className="text-center">
+            <button
+              type="submit"
+              className="w-full md:w-auto bg-softGold text-white font-semibold px-10 py-3 rounded-full shadow-md hover:bg-charcoal hover:text-softGold transition-all duration-300 transform hover:scale-105"
+            >
+              Tambah ke Keranjang 🧺
+            </button>
+          </div>
+        </form>
+      </div>
     </section>
   );
 }

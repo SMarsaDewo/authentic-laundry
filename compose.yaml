@@ -15,15 +15,18 @@ version: '3.8'
 services:
   frontend:
     build:
-      context: ./frontend         
-      dockerfile: ../Dockerfile   
+      context: ./frontend
+      dockerfile: ../Dockerfile
     ports:
       - "5173:5173"
     working_dir: /app
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     command: ["npm", "run", "dev"]
+
 
 
 

@@ -11,7 +11,7 @@ export default function Hero() {
         </h1>
         <p className="mt-4 text-lg md:text-xl font-poppins leading-relaxed">
           #BudayakanMencucidiLaundry — <br className="hidden md:block" />
-          <span className="font-semibold text-softGold">
+          <span className="font-semibold text-sky-400 bg-sky-100 px-2 rounded-md">
             Bersih, Cepat, dan Terpercaya
           </span>
         </p>

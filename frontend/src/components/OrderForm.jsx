@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
+import { Link } from "react-router-dom";
 
 export default function OrderForm() {
   const { addToCart } = useCart();
@@ -17,16 +18,13 @@ export default function OrderForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     addToCart(form);
-    alert("Pesanan ditambahkan ke keranjang!");
+    alert("Pesanan berhasil ditambahkan ke keranjang!");
     setForm({ nama: "", telepon: "", layanan: "", alamat: "", catatan: "" });
   };
 
   return (
-    <section
-      id="order"
-      className="relative bg-gradient-to-br from-lightTeal/30 via-white to-softGold/20 py-24 px-6 overflow-hidden"
-    >
-      {/* background bubble dekorasi */}
+    <section className="relative bg-gradient-to-br from-lightTeal/30 via-white to-softGold/20 py-24 px-6 overflow-hidden">
+      {/* Dekorasi background */}
       <div className="absolute w-72 h-72 bg-lightTeal/30 blur-3xl rounded-full top-10 left-10 opacity-50 animate-pulse"></div>
       <div className="absolute w-56 h-56 bg-softGold/30 blur-3xl rounded-full bottom-10 right-10 opacity-50 animate-pulse"></div>
 
@@ -35,14 +33,13 @@ export default function OrderForm() {
           Formulir Pemesanan
         </h2>
         <p className="text-center text-gray-600 font-poppins mb-12">
-          Yuk, isi data di bawah ini untuk melakukan pemesanan layanan laundry.
+          Isi data berikut untuk melakukan pemesanan layanan laundry.
         </p>
 
         <form
           onSubmit={handleSubmit}
           className="max-w-3xl mx-auto bg-white/90 backdrop-blur-sm border border-lightTeal/30 rounded-2xl shadow-xl p-8 md:p-10 space-y-6 transition-all duration-300"
         >
-          {/* Input Nama */}
           <div className="text-left">
             <label className="block text-charcoal font-semibold mb-2 font-poppins">
               Nama Lengkap
@@ -57,7 +54,6 @@ export default function OrderForm() {
             />
           </div>
 
-          {/* Input Telepon */}
           <div className="text-left">
             <label className="block text-charcoal font-semibold mb-2 font-poppins">
               No. Telepon
@@ -72,7 +68,6 @@ export default function OrderForm() {
             />
           </div>
 
-          {/* Select Layanan */}
           <div className="text-left">
             <label className="block text-charcoal font-semibold mb-2 font-poppins">
               Pilih Layanan
@@ -91,7 +86,6 @@ export default function OrderForm() {
             </select>
           </div>
 
-          {/* Alamat */}
           <div className="text-left">
             <label className="block text-charcoal font-semibold mb-2 font-poppins">
               Alamat Lengkap
@@ -107,7 +101,6 @@ export default function OrderForm() {
             ></textarea>
           </div>
 
-          {/* Catatan */}
           <div className="text-left">
             <label className="block text-charcoal font-semibold mb-2 font-poppins">
               Catatan Tambahan (Opsional)
@@ -122,14 +115,20 @@ export default function OrderForm() {
             ></textarea>
           </div>
 
-          {/* Tombol Submit */}
-          <div className="text-center">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 mt-8">
             <button
               type="submit"
-              className="w-full md:w-auto bg-softGold text-white font-semibold px-10 py-3 rounded-full shadow-md hover:bg-charcoal hover:text-softGold transition-all duration-300 transform hover:scale-105"
+              className="bg-softGold text-white font-semibold px-10 py-3 rounded-full shadow-md hover:bg-charcoal hover:text-softGold transition-all duration-300 transform hover:scale-105"
             >
               Tambah ke Keranjang 🧺
             </button>
+
+            <Link
+              to="/summary"
+              className="bg-charcoal text-white font-semibold px-10 py-3 rounded-full shadow-md hover:bg-softGold hover:text-charcoal transition-all duration-300 transform hover:scale-105"
+            >
+              Lihat Ringkasan Pesanan 🧾
+            </Link>
           </div>
         </form>
       </div>

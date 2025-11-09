@@ -6,9 +6,10 @@ import OrderForm from "../components/OrderForm";
 import Testimonial from "../components/Testimonial";
 import Cart from "../components/Cart";
 import GallerySlider from "../components/GallerySlider";
+import WhatsAppButton from "../components/WhatsAppButton";
 
 export default function Home() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -17,14 +18,8 @@ export default function Home() {
       <GallerySlider />
       <Services />
       <OrderForm />
-        {/* <button
-        onClick={() => navigate("/summary")}
-        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
-      >
-        
-      </button> */}
-
       <Testimonial />
+      <WhatsAppButton />
       <Cart />
     </>
   );

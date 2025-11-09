@@ -30,9 +30,7 @@ export default function Navbar() {
             alt="Authentic Laundry Logo"
             className="h-10 w-10 rounded-md shadow-sm"
           />
-          <h1 className="font-serifDisplay text-2xl md:text-3xl text-charcoal tracking-tight">
-            Authentic <span className="text-softGold">Laundry</span>
-          </h1>
+          
         </div>
 
         {/* DESKTOP NAV */}

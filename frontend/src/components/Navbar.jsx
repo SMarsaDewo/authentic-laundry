@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { cartItems } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -24,13 +24,15 @@ export default function Navbar() {
     >
       <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-3 md:py-4">
         {/* LOGO + BRAND */}
-        <div className="flex items-center gap-3">
+        <div
+          className="flex items-center gap-3 cursor-pointer"
+          onClick={() => navigate("/")}
+        >
           <img
             src="/src/assets/logo.png"
             alt="Authentic Laundry Logo"
             className="h-10 w-10 rounded-md shadow-sm"
           />
-          
         </div>
 
         {/* DESKTOP NAV */}
@@ -46,10 +48,14 @@ export default function Navbar() {
           ))}
 
           {/* ICON KERANJANG */}
-          <a href="#cart" className="relative">
+          <button
+            onClick={() => navigate("/summary")}
+            className="relative text-charcoal hover:text-softGold transition"
+            aria-label="Lihat Keranjang"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6 text-charcoal hover:text-softGold transition"
+              className="w-6 h-6"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -66,7 +72,7 @@ export default function Navbar() {
                 {cartItems.length}
               </span>
             )}
-          </a>
+          </button>
         </div>
 
         {/* MOBILE MENU BUTTON */}
@@ -113,13 +119,17 @@ export default function Navbar() {
               {item}
             </a>
           ))}
-          <a
-            href="#cart"
-            onClick={() => setIsOpen(false)}
+
+          {/* Tombol Keranjang di Mobile */}
+          <button
+            onClick={() => {
+              navigate("/summary");
+              setIsOpen(false);
+            }}
             className="inline-block bg-softGold text-white font-semibold px-5 py-2 rounded-full shadow hover:bg-charcoal hover:text-softGold transition-all duration-300"
           >
             Keranjang ({cartItems.length})
-          </a>
+          </button>
         </div>
       )}
     </nav>

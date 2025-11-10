@@ -1,26 +1,65 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { Link } from "react-router-dom";
 
 export default function OrderForm() {
   const { addToCart } = useCart();
+
   const [form, setForm] = useState({
     nama: "",
     telepon: "",
     layanan: "",
+    jumlah: 1,
     alamat: "",
     catatan: "",
   });
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const [estimasiBiaya, setEstimasiBiaya] = useState(0);
 
+  // Daftar harga layanan
+  const priceMap = {
+    "Cuci Kiloan": 7000,
+    "Cuci Setrika": 10000,
+    "Dry Cleaning": 25000,
+  };
+
+  // Hitung estimasi biaya otomatis
+  useEffect(() => {
+    const price = priceMap[form.layanan] || 0;
+    setEstimasiBiaya(price * form.jumlah);
+  }, [form.layanan, form.jumlah]);
+
+  // Fungsi ubah input
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm({
+      ...form,
+      [name]: name === "jumlah" ? parseInt(value) || 1 : value,
+    });
+  };
+
+  // Simpan ke keranjang
   const handleSubmit = (e) => {
     e.preventDefault();
-    addToCart(form);
+    addToCart({ ...form, estimasiBiaya });
     alert("Pesanan berhasil ditambahkan ke keranjang!");
-    setForm({ nama: "", telepon: "", layanan: "", alamat: "", catatan: "" });
+    setForm({
+      nama: "",
+      telepon: "",
+      layanan: "",
+      jumlah: 1,
+      alamat: "",
+      catatan: "",
+    });
+    setEstimasiBiaya(0);
   };
+
+  // Format ke Rupiah
+  const formatRupiah = (num) =>
+    new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(num);
 
   return (
     <section className="relative bg-gradient-to-br from-lightTeal/30 via-white to-softGold/20 py-24 px-6 overflow-hidden">
@@ -40,12 +79,13 @@ export default function OrderForm() {
           onSubmit={handleSubmit}
           className="max-w-3xl mx-auto bg-white/90 backdrop-blur-sm border border-lightTeal/30 rounded-2xl shadow-xl p-8 md:p-10 space-y-6 transition-all duration-300"
         >
+          {/* Nama */}
           <div className="text-left">
             <label className="block text-charcoal font-semibold mb-2 font-poppins">
               Nama Lengkap
             </label>
             <input
-              className="border border-lightTeal/40 focus:border-softGold focus:ring-2 focus:ring-softGold/40 p-3 w-full rounded-xl transition-all outline-none font-poppins"
+              className="border border-lightTeal/40 focus:border-softGold focus:ring-2 focus:ring-softGold/40 p-3 w-full rounded-xl outline-none font-poppins"
               placeholder="Masukkan nama Anda"
               name="nama"
               value={form.nama}
@@ -54,12 +94,13 @@ export default function OrderForm() {
             />
           </div>
 
+          {/* Telepon */}
           <div className="text-left">
             <label className="block text-charcoal font-semibold mb-2 font-poppins">
               No. Telepon
             </label>
             <input
-              className="border border-lightTeal/40 focus:border-softGold focus:ring-2 focus:ring-softGold/40 p-3 w-full rounded-xl transition-all outline-none font-poppins"
+              className="border border-lightTeal/40 focus:border-softGold focus:ring-2 focus:ring-softGold/40 p-3 w-full rounded-xl outline-none font-poppins"
               placeholder="Contoh: 08123456789"
               name="telepon"
               value={form.telepon}
@@ -68,12 +109,13 @@ export default function OrderForm() {
             />
           </div>
 
+          {/* Layanan */}
           <div className="text-left">
             <label className="block text-charcoal font-semibold mb-2 font-poppins">
               Pilih Layanan
             </label>
             <select
-              className="border border-lightTeal/40 focus:border-softGold focus:ring-2 focus:ring-softGold/40 p-3 w-full rounded-xl bg-white transition-all outline-none font-poppins"
+              className="border border-lightTeal/40 focus:border-softGold focus:ring-2 focus:ring-softGold/40 p-3 w-full rounded-xl bg-white outline-none font-poppins"
               name="layanan"
               value={form.layanan}
               onChange={handleChange}
@@ -86,12 +128,29 @@ export default function OrderForm() {
             </select>
           </div>
 
+          {/* Jumlah */}
+          <div className="text-left">
+            <label className="block text-charcoal font-semibold mb-2 font-poppins">
+              Jumlah (Kg / Pcs)
+            </label>
+            <input
+              type="number"
+              min="1"
+              className="border border-lightTeal/40 focus:border-softGold focus:ring-2 focus:ring-softGold/40 p-3 w-full rounded-xl outline-none font-poppins"
+              name="jumlah"
+              value={form.jumlah}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {/* Alamat */}
           <div className="text-left">
             <label className="block text-charcoal font-semibold mb-2 font-poppins">
               Alamat Lengkap
             </label>
             <textarea
-              className="border border-lightTeal/40 focus:border-softGold focus:ring-2 focus:ring-softGold/40 p-3 w-full rounded-xl transition-all outline-none font-poppins"
+              className="border border-lightTeal/40 focus:border-softGold focus:ring-2 focus:ring-softGold/40 p-3 w-full rounded-xl outline-none font-poppins"
               placeholder="Masukkan alamat lengkap untuk pengantaran/pengambilan"
               name="alamat"
               rows={3}
@@ -101,12 +160,13 @@ export default function OrderForm() {
             ></textarea>
           </div>
 
+          {/* Catatan */}
           <div className="text-left">
             <label className="block text-charcoal font-semibold mb-2 font-poppins">
               Catatan Tambahan (Opsional)
             </label>
             <textarea
-              className="border border-lightTeal/40 focus:border-softGold focus:ring-2 focus:ring-softGold/40 p-3 w-full rounded-xl transition-all outline-none font-poppins"
+              className="border border-lightTeal/40 focus:border-softGold focus:ring-2 focus:ring-softGold/40 p-3 w-full rounded-xl outline-none font-poppins"
               placeholder="Contoh: Tolong gunakan parfum lembut"
               name="catatan"
               rows={2}
@@ -115,6 +175,15 @@ export default function OrderForm() {
             ></textarea>
           </div>
 
+          {/* Estimasi biaya */}
+          <div className="text-center font-poppins text-lg text-charcoal mt-4">
+            Estimasi Biaya:{" "}
+            <span className="font-semibold text-softGold">
+              {formatRupiah(estimasiBiaya)}
+            </span>
+          </div>
+
+          {/* Tombol */}
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 mt-8">
             <button
               type="submit"

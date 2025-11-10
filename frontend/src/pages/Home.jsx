@@ -4,7 +4,6 @@ import About from "../components/About";
 import Services from "../components/Services";
 import OrderForm from "../components/OrderForm";
 import Testimonial from "../components/Testimonial";
-import Cart from "../components/Cart";
 import GallerySlider from "../components/GallerySlider";
 import WhatsAppButton from "../components/WhatsAppButton";
 
@@ -20,7 +19,6 @@ export default function Home() {
       <OrderForm />
       <Testimonial />
       <WhatsAppButton />
-      <Cart />
     </>
   );
 }

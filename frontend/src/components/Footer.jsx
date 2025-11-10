@@ -37,6 +37,13 @@ export default function Footer() {
           >
             Lokasi
           </a>
+          <span>•</span>
+          <a
+            href="/login"
+            className="hover:text-softGold transition-colors duration-300"
+          >
+            Masuk
+          </a>
         </div>
 
         <p className="text-xs text-pureWhite/60 mt-4">

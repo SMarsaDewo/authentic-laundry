@@ -5,7 +5,6 @@ export default function OrderSummary() {
 
   const WHATSAPP_NUMBER = "6285974733004";
 
-  // Fungsi hitung total biaya
   const calculateTotal = () => {
     return cartItems.reduce(
       (total, item) => total + (item.estimasiBiaya || 0),
@@ -45,6 +44,30 @@ export default function OrderSummary() {
     const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
     window.open(whatsappLink, "_blank");
   };
+
+
+  
+const handleSendToBackend = async () => {
+    if (cartItems.length === 0) return alert("Belum ada pesanan!");
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/orders", {
+        orders: cartItems,
+        total: calculateTotal(),
+      });
+
+      if (response.status === 201) {
+        alert("Pesanan berhasil dikirim ke server ✅");
+        clearCart();
+      }
+    } catch (error) {
+      console.error("Gagal kirim pesanan ke backend:", error);
+      alert("Terjadi kesalahan saat mengirim pesanan ke server ❌");
+    }
+  };
+
+
+
 
   if (cartItems.length === 0) {
     return (

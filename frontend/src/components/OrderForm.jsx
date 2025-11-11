@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { Link } from "react-router-dom";
+import { createOrder } from "../api/backend";
 
 export default function OrderForm() {
   const { addToCart } = useCart();
@@ -39,10 +40,23 @@ export default function OrderForm() {
   };
 
   // Simpan ke keranjang
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+ try {
+    await createOrder({ ...form, estimasiBiaya });
+    alert("Pesanan berhasil disimpan ke database!");
+  } 
+  
+  catch (error) {
+    console.error("Gagal menyimpan pesanan:", error);
+  }
+
     addToCart({ ...form, estimasiBiaya });
+
     alert("Pesanan berhasil ditambahkan ke keranjang!");
+    
+    
     setForm({
       nama: "",
       telepon: "",

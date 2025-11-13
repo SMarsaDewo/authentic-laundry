@@ -5,10 +5,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function GallerySlider() {
   const images = [
-    { id: 1, src: "/images/gambar1.PNG", title: "Cuci Kiloan", desc: "Layanan cepat dan hemat untuk pakaian harian." },
-    { id: 2, src: "/images/gambar2.PNG", title: "Setrika Rapi", desc: "Pakaian Anda disetrika dengan rapi dan wangi." },
+    { id: 1, src: "/images/gambar1.png", title: "Cuci Kiloan", desc: "Layanan cepat dan hemat untuk pakaian harian." },
+    { id: 2, src: "/images/gambar2.png", title: "Setrika Rapi", desc: "Pakaian Anda disetrika dengan rapi dan wangi." },
     { id: 3, src: "/images/gambar3.png", title: "Dry Cleaning", desc: "Perawatan khusus untuk bahan sensitif." },
-    { id: 4, src: "/images/gambar4.jpeg", title: "Antar Jemput Gratis", desc: "Nikmati layanan antar jemput tanpa biaya." },
+    { id: 4, src: "/images/gambar4.png", title: "Antar Jemput Gratis", desc: "Nikmati layanan antar jemput tanpa biaya." },
   ];
 
   const ArrowButton = ({ direction, onClick }) => (

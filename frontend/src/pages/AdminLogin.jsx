@@ -1,23 +1,44 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // 🔧 Ambil base URL dari environment variable (biar bisa pakai docker compose)
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    // sementara: login dummy (bisa nanti diganti ke backend Express + MySQL)
-    if (form.username === "admin" && form.password === "12345") {
-      alert("Login berhasil ✅");
-      navigate("/dashboard");
-    } else {
-      setError("Username atau password salah ❌");
+    try {
+      console.log("Form data dikirim:", form);
+      const res = await axios.post(`${API_URL}/auth/login`, form);
+
+      console.log("Response dari backend:", res.data);
+
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("admin", JSON.stringify(res.data.admin));
+
+        alert("Login berhasil ✅");
+        navigate("/dashboard");
+      } else {
+        setError("Login gagal, token tidak ditemukan ❌");
+      }
+    } catch (err) {
+      console.error("Error response:", err.response?.data);
+      setError(err.response?.data?.message || "Terjadi kesalahan saat login");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -70,9 +91,10 @@ export default function AdminLogin() {
 
           <button
             type="submit"
-            className="w-full bg-softGold text-white font-semibold py-3 rounded-xl hover:bg-charcoal hover:text-softGold transition-all duration-300 transform hover:scale-105"
+            disabled={loading}
+            className="w-full bg-softGold text-white font-semibold py-3 rounded-xl hover:bg-charcoal hover:text-softGold transition-all duration-300 transform hover:scale-105 disabled:opacity-70"
           >
-            Masuk
+            {loading ? "Memproses..." : "Masuk"}
           </button>
         </form>
 

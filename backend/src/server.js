@@ -6,4 +6,5 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`✅ Server backend jalan di port ${PORT}`);
+  console.log(`🌐 API Auth tersedia di http://localhost:${PORT}/api/auth`);
 });

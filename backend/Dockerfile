@@ -1,12 +1,22 @@
-FROM node:alpine
+FROM node:18-slim
 
 WORKDIR /app
 
+RUN npm config set registry https://registry.npmmirror.com
+
+RUN apt-get update && \
+    apt-get install -y python3 g++ make && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY package*.json ./
-RUN npm install
+
+RUN npm cache clean --force
+RUN npm install --quiet
 
 COPY . .
 
-EXPOSE 5000
+RUN npm install -g nodemon
 
-CMD ["npm", "run", "dev"]
+CMD ["sh", "-c", "sleep 10 && npm run dev"]
+
+EXPOSE 5000

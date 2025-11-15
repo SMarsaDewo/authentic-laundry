@@ -29,8 +29,8 @@ export default function AdminLogin() {
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("admin", JSON.stringify(res.data.admin));
 
-        alert("Login berhasil ✅");
-        navigate("/dashboard");
+        // alert("Login berhasil ✅");
+        navigate("/dashboard-admin");
       } else {
         setError("Login gagal, token tidak ditemukan ❌");
       }
@@ -41,6 +41,8 @@ export default function AdminLogin() {
       setLoading(false);
     }
   };
+
+  
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-lightTeal/30 via-white to-softGold/20 flex items-center justify-center px-6">

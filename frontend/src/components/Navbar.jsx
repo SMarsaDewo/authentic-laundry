@@ -7,6 +7,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const { cartItems } = useCart();
   const navigate = useNavigate();
+  const isAdmin = localStorage.getItem("token");
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -26,7 +27,7 @@ export default function Navbar() {
         {/* LOGO + BRAND */}
         <div
           className="flex items-center gap-3 cursor-pointer"
-          onClick={() => navigate("/")}
+          onClick={() => navigate(isAdmin ? "/dashboard-admin" : "/")}
         >
           <img
             src="/src/assets/logo.png"

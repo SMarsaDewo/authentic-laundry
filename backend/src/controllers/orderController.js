@@ -14,7 +14,8 @@ export const orderController = {
   async getAll(req, res) {
     try {
       const data = await orderService.getAllOrders();
-      res.json(data);
+      
+      res.status(200).json(data);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Gagal mengambil data" });

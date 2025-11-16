@@ -5,15 +5,24 @@ export default function DashboardAdmin() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
   const formatRupiah = (num) =>
     new Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: "IDR",
-    }).format(num);
+    }).format(num ?? 0);
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get(`${API_URL}/orders`);
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get(`${API_URL}/orders`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       setOrders(res.data);
     } catch (err) {
       console.log("Gagal ambil data:", err);
@@ -65,9 +74,7 @@ export default function DashboardAdmin() {
                 <td>{order.telepon}</td>
                 <td>{order.alamat}</td>
                 <td>{order.catatan || "-"}</td>
-                <td className="text-right">
-                  {formatRupiah(order.total || 0)}
-                </td>
+                <td className="text-right">{formatRupiah(order.total)}</td>
               </tr>
             ))}
           </tbody>

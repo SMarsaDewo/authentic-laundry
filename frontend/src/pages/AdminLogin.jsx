@@ -8,7 +8,6 @@ export default function AdminLogin() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 🔧 Ambil base URL dari environment variable (biar bisa pakai docker compose)
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
   const handleChange = (e) =>
@@ -41,8 +40,6 @@ export default function AdminLogin() {
       setLoading(false);
     }
   };
-
-  
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-lightTeal/30 via-white to-softGold/20 flex items-center justify-center px-6">

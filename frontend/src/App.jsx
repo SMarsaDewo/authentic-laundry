@@ -26,7 +26,6 @@ function App() {
         <Route path="/summary" element={<OrderSummary />} />
         <Route path="/login" element={<AdminLogin />} />
 
-
         <Route
           path="/dashboard-admin"
           element={

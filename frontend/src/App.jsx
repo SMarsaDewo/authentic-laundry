@@ -11,9 +11,10 @@ import AdminLogin from "./pages/AdminLogin";
 import OrderSummary from "./pages/OrderSummary";
 import Dashboard from "./pages/DashboardAdmin";
 import { AuthProvider } from "./context/AuthContext";
+import { useAuth } from "./context/AuthContext";
 
 function PrivateRoute({ children }) {
-  const token = localStorage.getItem("token");
+  const { token } = useAuth();
   // console.log("Token sekarang:", token);
   return token ? children : <Navigate to="/login" />;
 }

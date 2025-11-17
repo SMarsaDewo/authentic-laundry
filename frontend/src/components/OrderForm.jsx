@@ -43,20 +43,22 @@ export default function OrderForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
- try {
-    await createOrder({ ...form, estimasiBiaya });
-    alert("Pesanan berhasil disimpan ke database!");
-  } 
-  
-  catch (error) {
-    console.error("Gagal menyimpan pesanan:", error);
-  }
+    try {
+      // Kirim ke backend dan DAPATKAN ID nya
+      const saved = await createOrder({ ...form, estimasiBiaya });
 
-    addToCart({ ...form, estimasiBiaya });
+      alert("Pesanan berhasil disimpan ke database!");
 
-    alert("Pesanan berhasil ditambahkan ke keranjang!");
-    
-    
+      // Masukkan ke cart dengan ID lengkap dari backend
+      addToCart(saved.data);
+
+      alert("Pesanan berhasil ditambahkan ke keranjang!");
+    } catch (error) {
+      console.error("Gagal menyimpan pesanan:", error);
+      alert("Gagal menyimpan pesanan!");
+    }
+
+    // Reset form
     setForm({
       nama: "",
       telepon: "",

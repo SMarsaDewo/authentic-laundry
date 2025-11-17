@@ -1,10 +1,20 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState([]);
+  // Load from localStorage
+  const [cartItems, setCartItems] = useState(() => {
+    const saved = localStorage.getItem("cart");
+    return saved ? JSON.parse(saved) : [];
+  });
 
+  // Save to localStorage setiap perubahan
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  // Tambah item (sudah harus menyertakan ID dari backend)
   const addToCart = (order) => {
     setCartItems((prev) => [...prev, order]);
   };
@@ -15,9 +25,22 @@ export function CartProvider({ children }) {
 
   const clearCart = () => setCartItems([]);
 
+  // Untuk update item
+  const updateItem = (index, updatedItem) => {
+    setCartItems((prev) =>
+      prev.map((item, i) => (i === index ? updatedItem : item))
+    );
+  };
+
   return (
     <CartContext.Provider
-      value={{ cartItems, addToCart, removeFromCart, clearCart }}
+      value={{
+        cartItems,
+        addToCart,
+        removeFromCart,
+        clearCart,
+        updateItem,
+      }}
     >
       {children}
     </CartContext.Provider>

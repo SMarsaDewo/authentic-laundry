@@ -5,6 +5,7 @@ dotenv.config();
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`✅ Server backend jalan di port ${PORT}`);
-  console.log(`🌐 API Auth tersedia di http://localhost:${PORT}/api/auth`);
+  console.log(`🔥 Backend berjalan di port ${PORT}`);
+  console.log(`📌 Order API : http://localhost:${PORT}/api/orders`);
+  console.log(`📌 Auth API  : http://localhost:${PORT}/api/auth`);
 });

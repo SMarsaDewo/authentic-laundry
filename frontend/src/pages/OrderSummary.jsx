@@ -1,15 +1,36 @@
 import { useCart } from "../context/CartContext";
+import axios from "axios";
+import { useState } from "react";
 
 export default function OrderSummary() {
-  const { cartItems, clearCart } = useCart();
+  const { cartItems, updateItem, removeFromCart } = useCart();
+  const [editingIndex, setEditingIndex] = useState(null);
 
-  const WHATSAPP_NUMBER = "6285974733004";
+  const handleEdit = (index) => setEditingIndex(index);
 
-  const calculateTotal = () => {
-    return cartItems.reduce(
-      (total, item) => total + (item.estimasiBiaya || 0),
-      0
-    );
+  const handleSave = async (index) => {
+    const item = cartItems[index];
+
+    try {
+      await axios.put(`http://localhost:5000/api/orders/${item.id}`, item);
+      alert("Berhasil disimpan ke database!");
+      setEditingIndex(null);
+    } catch (err) {
+      console.error(err);
+      alert("Gagal update pesanan!");
+    }
+  };
+
+  const handleDelete = async (item, index) => {
+    if (!confirm("Hapus item ini?")) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/orders/${item.id}`);
+      removeFromCart(index);
+      alert("Berhasil dihapus dari database!");
+    } catch (err) {
+      console.error(err);
+      alert("Gagal menghapus pesanan!");
+    }
   };
 
   const formatRupiah = (num) =>
@@ -18,130 +39,211 @@ export default function OrderSummary() {
       currency: "IDR",
     }).format(num);
 
-  // Kirim ke WhatsApp
-  const handleSendToWhatsApp = () => {
-    if (cartItems.length === 0) return;
-
-    const message = cartItems
-      .map(
-        (item, index) =>
-          `Pesanan ${index + 1}:\nNama: ${item.nama}\nTelepon: ${
-            item.telepon
-          }\nLayanan: ${item.layanan}\nJumlah: ${item.jumlah || "-"}\nAlamat: ${
-            item.alamat
-          }\nCatatan: ${item.catatan || "-"}\nEstimasi Biaya: ${formatRupiah(
-            item.estimasiBiaya || 0
-          )}`
-      )
-      .join("\n\n");
-
-    const totalText = `\nTotal Estimasi Biaya: ${formatRupiah(
-      calculateTotal()
-    )}`;
-    const finalMessage = `Halo Authentic Laundry!\nSaya ingin memesan layanan berikut:\n\n${message}${totalText}\n\nTerima kasih! 🙏`;
-
-    const encodedMessage = encodeURIComponent(finalMessage);
-    const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
-    window.open(whatsappLink, "_blank");
-  };
-
-
-  
-const handleSendToBackend = async () => {
-    if (cartItems.length === 0) return alert("Belum ada pesanan!");
-
-    try {
-      const response = await axios.post("http://localhost:5000/api/orders", {
-        orders: cartItems,
-        total: calculateTotal(),
-      });
-
-      if (response.status === 201) {
-        alert("Pesanan berhasil dikirim ke server ✅");
-        clearCart();
-      }
-    } catch (error) {
-      console.error("Gagal kirim pesanan ke backend:", error);
-      alert("Terjadi kesalahan saat mengirim pesanan ke server ❌");
-    }
-  };
-
-
-
-
-  if (cartItems.length === 0) {
-    return (
-      <section className="py-24 text-center bg-offWhite min-h-screen">
-        <h2 className="text-3xl font-serifDisplay text-charcoal mb-4">
-          Belum ada pesanan 😅
-        </h2>
-        <p className="text-gray-600 font-poppins">
-          Silakan isi formulir pemesanan terlebih dahulu.
-        </p>
-      </section>
-    );
-  }
-
   return (
-    <section className="py-24 px-6 bg-offWhite min-h-screen">
-      <h2 className="text-4xl font-serifDisplay text-charcoal text-center mb-10">
-        Ringkasan Pesanan Anda
-      </h2>
+    <section className="py-24 px-6 bg-gradient-to-br from-lightTeal/20 via-white to-softGold/20 min-h-screen relative overflow-hidden">
+      {/* Background dekorasi */}
+      <div className="absolute w-72 h-72 bg-lightTeal/30 blur-3xl rounded-full top-10 left-10 opacity-50"></div>
+      <div className="absolute w-56 h-56 bg-softGold/30 blur-3xl rounded-full bottom-10 right-10 opacity-50"></div>
 
-      <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl p-8 border border-gray-100">
-        <table className="w-full text-left font-poppins border-collapse">
-          <thead>
-            <tr className="border-b text-charcoal">
-              <th className="pb-3">Nama</th>
-              <th className="pb-3">Layanan</th>
-              <th className="pb-3">Jumlah</th>
-              <th className="pb-3">Telepon</th>
-              <th className="pb-3">Alamat</th>
-              <th className="pb-3">Catatan</th>
-              <th className="pb-3 text-right">Estimasi Biaya</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cartItems.map((item, index) => (
-              <tr key={index} className="border-b text-gray-700">
-                <td className="py-3">{item.nama}</td>
-                <td>{item.layanan}</td>
-                <td>{item.jumlah || "-"}</td>
-                <td>{item.telepon}</td>
-                <td>{item.alamat}</td>
-                <td>{item.catatan || "-"}</td>
-                <td className="text-right">
-                  {formatRupiah(item.estimasiBiaya || 0)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="relative z-10">
+        <h2 className="text-4xl md:text-5xl font-serifDisplay text-center text-charcoal mb-10 drop-shadow">
+          Ringkasan Pesanan Anda
+        </h2>
 
-        {/* Total & Tombol */}
-        <div className="flex flex-col md:flex-row justify-between items-center mt-8 gap-4">
-          <p className="text-lg font-semibold text-charcoal font-poppins">
-            Total Estimasi Biaya:{" "}
-            <span className="text-softGold text-xl">
-              {formatRupiah(calculateTotal())}
-            </span>
-          </p>
+        <div className="max-w-6xl mx-auto bg-white/90 backdrop-blur-sm shadow-2xl rounded-2xl p-8 md:p-10 border border-lightTeal/30">
+          {cartItems.length === 0 ? (
+            <p className="text-center text-gray-500 text-lg font-poppins py-10">
+              Belum ada pesanan di keranjang 🧺
+            </p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse font-poppins">
+                <thead>
+                  <tr className="bg-lightTeal/20 text-charcoal border-b">
+                    <th className="p-3">Nama</th>
+                    <th className="p-3">Layanan</th>
+                    <th className="p-3">Jumlah</th>
+                    <th className="p-3">Telepon</th>
+                    <th className="p-3">Alamat</th>
+                    <th className="p-3">Catatan</th>
+                    <th className="p-3 text-right">Estimasi</th>
+                    <th className="p-3 text-center">Aksi</th>
+                  </tr>
+                </thead>
 
-          <div className="flex gap-3">
-            <button
-              onClick={clearCart}
-              className="bg-red-500 text-white font-semibold px-6 py-3 rounded-lg hover:bg-red-600 transition"
-            >
-              Hapus Semua
-            </button>
+                <tbody>
+                  {cartItems.map((item, index) => {
+                    const isEditing = editingIndex === index;
 
-            <button
-              onClick={handleSendToWhatsApp}
-              className="bg-green-500 text-white font-semibold px-6 py-3 rounded-lg hover:bg-green-600 transition"
-            >
-              Kirim via WhatsApp
-            </button>
-          </div>
+                    return (
+                      <tr
+                        key={index}
+                        className="border-b hover:bg-lightTeal/10 transition"
+                      >
+                        <td className="p-2">
+                          <input
+                            type="text"
+                            disabled={!isEditing}
+                            className={`w-full p-2 rounded-md border ${
+                              isEditing
+                                ? "bg-white border-softGold"
+                                : "bg-gray-100 border-gray-300"
+                            }`}
+                            value={item.nama}
+                            onChange={(e) =>
+                              updateItem(index, {
+                                ...item,
+                                nama: e.target.value,
+                              })
+                            }
+                          />
+                        </td>
+
+                        <td className="p-2">
+                          <input
+                            type="text"
+                            disabled={!isEditing}
+                            className={`w-full p-2 rounded-md border ${
+                              isEditing
+                                ? "bg-white border-softGold"
+                                : "bg-gray-100 border-gray-300"
+                            }`}
+                            value={item.layanan}
+                            onChange={(e) =>
+                              updateItem(index, {
+                                ...item,
+                                layanan: e.target.value,
+                              })
+                            }
+                          />
+                        </td>
+
+                        <td className="p-2 w-20">
+                          <input
+                            type="number"
+                            disabled={!isEditing}
+                            className={`w-full p-2 rounded-md border text-center ${
+                              isEditing
+                                ? "bg-white border-softGold"
+                                : "bg-gray-100 border-gray-300"
+                            }`}
+                            value={item.jumlah}
+                            onChange={(e) =>
+                              updateItem(index, {
+                                ...item,
+                                jumlah: Number(e.target.value),
+                              })
+                            }
+                          />
+                        </td>
+
+                        <td className="p-2">
+                          <input
+                            type="text"
+                            disabled={!isEditing}
+                            className={`w-full p-2 rounded-md border ${
+                              isEditing
+                                ? "bg-white border-softGold"
+                                : "bg-gray-100 border-gray-300"
+                            }`}
+                            value={item.telepon}
+                            onChange={(e) =>
+                              updateItem(index, {
+                                ...item,
+                                telepon: e.target.value,
+                              })
+                            }
+                          />
+                        </td>
+
+                        <td className="p-2">
+                          <input
+                            type="text"
+                            disabled={!isEditing}
+                            className={`w-full p-2 rounded-md border ${
+                              isEditing
+                                ? "bg-white border-softGold"
+                                : "bg-gray-100 border-gray-300"
+                            }`}
+                            value={item.alamat}
+                            onChange={(e) =>
+                              updateItem(index, {
+                                ...item,
+                                alamat: e.target.value,
+                              })
+                            }
+                          />
+                        </td>
+
+                        <td className="p-2">
+                          <input
+                            type="text"
+                            disabled={!isEditing}
+                            className={`w-full p-2 rounded-md border ${
+                              isEditing
+                                ? "bg-white border-softGold"
+                                : "bg-gray-100 border-gray-300"
+                            }`}
+                            value={item.catatan}
+                            onChange={(e) =>
+                              updateItem(index, {
+                                ...item,
+                                catatan: e.target.value,
+                              })
+                            }
+                          />
+                        </td>
+
+                        <td className="p-2 text-right">
+                          <input
+                            type="number"
+                            disabled={!isEditing}
+                            className={`w-28 p-2 rounded-md border text-right ${
+                              isEditing
+                                ? "bg-white border-softGold"
+                                : "bg-gray-100 border-gray-300"
+                            }`}
+                            value={item.estimasiBiaya}
+                            onChange={(e) =>
+                              updateItem(index, {
+                                ...item,
+                                estimasiBiaya: Number(e.target.value),
+                              })
+                            }
+                          />
+                        </td>
+
+                        <td className="p-2 text-center space-x-2">
+                          {!isEditing ? (
+                            <button
+                              onClick={() => handleEdit(index)}
+                              className="px-4 py-1.5 rounded-lg bg-softGold text-charcoal font-semibold hover:bg-charcoal hover:text-softGold transition"
+                            >
+                              Edit
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleSave(index)}
+                              className="px-4 py-1.5 rounded-lg bg-green-500 text-white font-semibold hover:bg-green-600 transition"
+                            >
+                              Save
+                            </button>
+                          )}
+
+                          <button
+                            onClick={() => handleDelete(item, index)}
+                            className="px-4 py-1.5 rounded-lg bg-red-500 text-white font-semibold hover:bg-red-600 transition"
+                          >
+                            Hapus
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </section>

@@ -21,28 +21,28 @@ function PrivateRoute({ children }) {
 
 function App() {
   return (
-  <Router>
-    <AuthProvider>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/summary" element={<OrderSummary />} />
-        <Route path="/login" element={<AdminLogin />} />
+    <Router>
+      <AuthProvider>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/summary" element={<OrderSummary />} />
+          <Route path="/login" element={<AdminLogin />} />
 
-        <Route
-          path="/dashboard-admin"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/dashboard-admin"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
 
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-      <Footer />
-    </AuthProvider>
-  </Router>
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+        <Footer />
+      </AuthProvider>
+    </Router>
   );
 }
 

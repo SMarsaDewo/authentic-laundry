@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 export default function DashboardAdmin() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+
+
+   const { logout } = useAuth();
 
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
@@ -88,7 +92,16 @@ export default function DashboardAdmin() {
         >
           Kembali ke Halaman Utama
         </a>
+    <button
+          onClick={logout}
+          className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition font-semibold"
+        >
+          Logout
+        </button>
+
       </div>
+
+
     </section>
   );
 }

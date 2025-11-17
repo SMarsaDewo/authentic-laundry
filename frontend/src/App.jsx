@@ -10,6 +10,7 @@ import Home from "./pages/Home";
 import AdminLogin from "./pages/AdminLogin";
 import OrderSummary from "./pages/OrderSummary";
 import Dashboard from "./pages/DashboardAdmin";
+import { AuthProvider } from "./context/AuthContext";
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("token");
@@ -19,7 +20,8 @@ function PrivateRoute({ children }) {
 
 function App() {
   return (
-    <Router>
+  <Router>
+    <AuthProvider>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -38,7 +40,8 @@ function App() {
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <Footer />
-    </Router>
+    </AuthProvider>
+  </Router>
   );
 }
 

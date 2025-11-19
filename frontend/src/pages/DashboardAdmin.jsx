@@ -3,13 +3,14 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
 export default function DashboardAdmin() {
+  // 1. Inisialisasi state dengan array kosong agar aman
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const { logout } = useAuth();
 
-   const { logout } = useAuth();
-
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  // 2. Pastikan Port mengarah ke 5001 (Host Port)
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
 
   const formatRupiah = (num) =>
     new Intl.NumberFormat("id-ID", {
@@ -27,9 +28,28 @@ export default function DashboardAdmin() {
         },
       });
 
-      setOrders(res.data);
+      console.log("📥 Data masuk:", res.data); // Cek Console untuk debug
+
+      // --- 3. LOGIKA ANTI-CRASH (PENTING) ---
+      // Kita cari array-nya dimanapun dia berada
+      if (Array.isArray(res.data)) {
+        setOrders(res.data);
+      } else if (res.data && Array.isArray(res.data.data)) {
+        setOrders(res.data.data);
+      } else {
+        console.warn("Format data bukan array, memaksa array kosong.");
+        setOrders([]);
+      }
     } catch (err) {
-      console.log("Gagal ambil data:", err);
+      console.error("Gagal ambil data:", err);
+      // Jika token expired (401), logout otomatis
+      if (
+        err.response &&
+        (err.response.status === 401 || err.response.status === 403)
+      ) {
+        logout();
+      }
+      setOrders([]); // Tetap set array kosong biar tidak blank
     } finally {
       setLoading(false);
     }
@@ -70,17 +90,29 @@ export default function DashboardAdmin() {
           </thead>
 
           <tbody>
-            {orders.map((order) => (
-              <tr key={order.id} className="border-b text-gray-700">
-                <td className="py-3">{order.nama}</td>
-                <td>{order.layanan}</td>
-                <td>{order.jumlah}</td>
-                <td>{order.telepon}</td>
-                <td>{order.alamat}</td>
-                <td>{order.catatan || "-"}</td>
-                <td className="text-right">{formatRupiah(order.total)}</td>
+            {/* --- 4. RENDERING AMAN (PENTING) --- */}
+            {/* Cek apakah variable 'orders' benar-benar Array & ada isinya */}
+            {Array.isArray(orders) && orders.length > 0 ? (
+              orders.map((order, index) => (
+                <tr key={order.id || index} className="border-b text-gray-700">
+                  <td className="py-3">{order.nama}</td>
+                  <td>{order.layanan}</td>
+                  <td>{order.jumlah}</td>
+                  <td>{order.telepon}</td>
+                  <td>{order.alamat}</td>
+                  <td>{order.catatan || "-"}</td>
+                  <td className="text-right">
+                    {formatRupiah(order.total || order.estimasiBiaya)}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" className="text-center py-8 text-gray-500">
+                  Belum ada pesanan masuk.
+                </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
@@ -88,20 +120,17 @@ export default function DashboardAdmin() {
       <div className="text-center mt-10">
         <a
           href="/"
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-semibold"
+          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-semibold mr-4"
         >
           Kembali ke Halaman Utama
         </a>
-    <button
+        <button
           onClick={logout}
           className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition font-semibold"
         >
           Logout
         </button>
-
       </div>
-
-
     </section>
   );
 }

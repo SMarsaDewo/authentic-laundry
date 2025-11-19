@@ -15,6 +15,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5173:5173"
+    volumes:
+      - ./frontend:/app          
+      - /app/node_modules
     environment:
       - VITE_API_URL=http://localhost:5001/api
       - CHOKIDAR_USEPOLLING=true

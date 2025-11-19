@@ -1,8 +1,9 @@
 import axios from "axios";
 
-const API = axios.create({
-  baseURL: "http://localhost:5000/api",
-});
+// BACKEND hanya bisa diakses via localhost:5001 dari browser
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
+
+const API = axios.create({ baseURL: API_BASE });
 
 export const createOrder = async (orderData) => {
   const res = await API.post("/orders", orderData);
